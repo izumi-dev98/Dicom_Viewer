@@ -10,7 +10,7 @@
 
         public string PatientID { get; set; }
 
-        public string Modalaty { get; set; }
+        public string Modality { get; set; }
 
         public string StudyDate { get; set; }
 
