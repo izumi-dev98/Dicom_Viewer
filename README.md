@@ -65,8 +65,8 @@ Dicom_Viewer/
     │
     └── Storage/
         └── dicom_files/                 # Physical DICOM file storage (empty by default)
-            # Sample DICOM files are downloaded from GitHub Releases
-            # See [Example DICOM Files](#-example-dicom-files) section below
+            # Add your own .dcm files here for testing
+            # Sample source: Siemens Healthineers Magnetom World DICOM Images
 ```
 
 ### Key Components
@@ -267,70 +267,44 @@ public class DicomStudyModels
 
 ## 📄 Example DICOM Files
 
-> **Note:** Sample DICOM files are not stored in the repository due to size. Download them from the **[GitHub Releases](https://github.com/izumi-dev98/Dicom_Viewer/releases/tag/v1.0.0-sample-dicom)** page.
+Sample DICOM files used for testing were sourced from **[Siemens Healthineers Magnetom World - DICOM Images](https://www.magnetomworld.siemens-healthineers.com/clinical-corner/protocols/dicom-images)**.
 
-### Download Sample Files
+> **Note:** Sample DICOM files are not stored in the repository due to size. Download them directly from the [Siemens Healthineers DICOM Images page](https://www.magnetomworld.siemens-healthineers.com/clinical-corner/protocols/dicom-images) or use your own `.dcm` files.
 
-| File | Size | Description | Download |
-|------|------|-------------|----------|
-| `Vida_Head.MR.Comp_DR-Gain_DR.1005.1.2021.04.27.14.20.13.818.14380335.dcm` | ~520 KB | MRI Head Study | [Download](https://github.com/izumi-dev98/Dicom_Viewer/releases/download/v1.0.0-sample-dicom/Vida_Head.MR.Comp_DR-Gain_DR.1005.1.2021.04.27.14.20.13.818.14380335.dcm) |
-| `IMG-0001-00001.dcm` | ~27 MB | Generic CT Image | [Download](https://github.com/izumi-dev98/Dicom_Viewer/releases/download/v1.0.0-sample-dicom/IMG-0001-00001.dcm) |
+### Sample Files Used in Testing
 
-### 1. MRI Head Study
-**File:** `Vida_Head.MR.Comp_DR-Gain_DR.1005.1.2021.04.27.14.20.13.818.14380335.dcm`
+| File | Size | Modality | Description |
+|------|------|----------|-------------|
+| `Vida_Head.MR.Comp_DR-Gain_DR.1005.1.2021.04.27.14.20.13.818.14380335.dcm` | ~520 KB | MR | MRI Head Study |
+| `IMG-0001-00001.dcm` | ~27 MB | CT | Generic CT Image |
 
-**Expected Metadata:**
-| Tag | Keyword | VR | Example Value |
-|-----|---------|----|---------------|
-| (0010,0010) | PatientName | PN | "Doe^John" |
-| (0010,0020) | PatientID | LO | "MRN123456" |
-| (0020,000D) | StudyInstanceUID | UI | "1.2.840.113619.2.5.1.3289.4567.20210427.142013" |
-| (0008,0060) | Modality | CS | "MR" |
-| (0008,0020) | StudyDate | DA | "20210427" |
+### Expected DICOM Tags Extracted
 
-### 2. Generic CT Image
-**File:** `IMG-0001-00001.dcm`
+The API extracts the following standard DICOM tags from uploaded files:
 
-**Expected Metadata:**
-| Tag | Keyword | VR | Example Value |
-|-----|---------|----|---------------|
-| (0010,0010) | PatientName | PN | "Smith^Jane" |
-| (0010,0020) | PatientID | LO | "PAT789012" |
-| (0020,000D) | StudyInstanceUID | UI | "1.2.392.200036.9116.2.6.1.48.12345.20210101" |
-| (0008,0060) | Modality | CS | "CT" |
-| (0008,0020) | StudyDate | DA | "20210101" |
+| Tag | Keyword | VR | Description |
+|-----|---------|----|-------------|
+| (0010,0010) | PatientName | PN | Patient's full name |
+| (0010,0020) | PatientID | LO | Patient ID / Medical Record Number |
+| (0020,000D) | StudyInstanceUID | UI | Unique identifier for the study |
+| (0008,0060) | Modality | CS | Imaging modality (MR, CT, XA, etc.) |
+| (0008,0020) | StudyDate | DA | Date of the study (YYYYMMDD) |
 
-### Setup Sample Files for Testing
+### Testing with Your Own DICOM Files
 
-After cloning the repository, download the sample files and place them in the storage folder:
+Place any `.dcm` file in the storage folder or upload via the API:
 
 ```bash
-# Create the storage directory
+# Create the storage directory (if not exists)
 mkdir -p "Dicom Viewer/Storage/dicom_files"
 
-# Download sample files (using curl or wget)
-curl -L -o "Dicom Viewer/Storage/dicom_files/Vida_Head.dcm" \
-  "https://github.com/izumi-dev98/Dicom_Viewer/releases/download/v1.0.0-sample-dicom/Vida_Head.MR.Comp_DR-Gain_DR.1005.1.2021.04.27.14.20.13.818.14380335.dcm"
-
-curl -L -o "Dicom Viewer/Storage/dicom_files/IMG-0001.dcm" \
-  "https://github.com/izumi-dev98/Dicom_Viewer/releases/download/v1.0.0-sample-dicom/IMG-0001-00001.dcm"
+# Copy your DICOM files here
+cp /path/to/your/file.dcm "Dicom Viewer/Storage/dicom_files/"
 ```
 
-### Testing with Sample Files
-
-You can test the API using the included `.http` file or via Swagger UI:
-
-```http
-POST https://localhost:7xxx/api/Dicom/PostStudy
-Content-Type: multipart/form-data; boundary=boundary
-
---boundary
-Content-Disposition: form-data; name="file"; filename="Vida_Head.dcm"
-Content-Type: application/dicom
-
-< ./Dicom Viewer/Storage/dicom_files/Vida_Head.dcm
---boundary--
-```
+Then test via:
+- **Swagger UI:** `https://localhost:7xxx/swagger` → POST `/api/Dicom/PostStudy`
+- **HTTP file:** Open `Dicom Viewer/Dicom Viewer.http` and send the POST request
 
 ---
 
