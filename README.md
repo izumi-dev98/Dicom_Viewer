@@ -358,7 +358,7 @@ Edit `Dicom Viewer/appsettings.json`:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=.\\SQLEXPRESS;Database=DicomViewerDb;Trusted_Connection=true;TrustServerCertificate=true"
+    "DefaultConnection": "Server=yourserver;Database=DicomViewerDb;Trusted_Connection=true;TrustServerCertificate=true"
   }
 }
 ```
